@@ -18,11 +18,10 @@ install/cidata:
 install/dtb:
 	rm -rf build
 	mkdir build
-	cd build && wget https://launchpad.net/~sifive-sandbox/+archive/ubuntu/linux/+files/linux-image-6.6.21-35-g29ac17434e52-eswin_6.6.21-35-g29ac17434e52-0ubuntu0~ppa13_all.deb
-	cd build && dpkg -x linux-image*.deb linux-modules/
+	cd build && wget https://launchpad.net/~eswincomputing/+archive/ubuntu/noble-eic7700/+files/linux-modules-6.6.18-03-eic7702_6.6.18-03_riscv64.deb
+	cd build && dpkg -x linux-modules*.deb linux-modules/
 	mkdir -p $(DESTDIR)/dtb
-	cp -r ./build/linux-modules/usr/lib/firmware/*-eswin/device-tree/* \
-	$(DESTDIR)/dtb
+	cp -r ./build/linux-modules/usr/lib/firmware/*-eic7702/device-tree/* $(DESTDIR)/dtb
 	rm -rf build
 
 install/grub:

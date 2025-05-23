@@ -5,11 +5,11 @@ revision: 1
 architecture: riscv64
 series: noble
 class: preinstalled
-kernel: linux-premier
+kernel: linux-eic7702
 gadget:
-  url: "https://github.com/RevySR/risc-v-gadget"
+  url: "https://github.com/guopf307/risc-v-gadget"
   type: "git"
-  branch: "ubuntu-p550"
+  branch: "ubuntu-eic7702-evb"
 rootfs:
   archive: ubuntu
   sources-list-deb822: true
@@ -33,16 +33,16 @@ rootfs:
 customization:
   extra-ppas:
     -
-      name: sifive-sandbox/release
-      fingerprint: 07A4AB084F5B6251B9EB460718EF46BDC6A17D42
-    -
       name: sifive-sandbox/linux
       fingerprint: 07A4AB084F5B6251B9EB460718EF46BDC6A17D42
+    -
+      name: eswincomputing/noble-eic7700
+      fingerprint: 5F1BB31B87A6D34CB7A509512672395EA9419D21
   cloud-init:
     user-data: |
       #cloud-config
       chpasswd:
-        expire: true
+        expire: false
         users:
           - name: ubuntu
             password: ubuntu
@@ -52,6 +52,7 @@ customization:
   extra-packages:
     - name: "flash-kernel"
     - name: "grub-efi-riscv64"
+    - name: "grub2-common"
     - name: "es-bmcd"
     - name: "eswin-eic7x-gpu"
     - name: "ubuntu-desktop"
@@ -69,9 +70,10 @@ customization:
     - name: "mesa-va-drivers"
     - name: "mesa-vdpau-drivers"
     - name: "mesa-vulkan-drivers"
-    - name: "firefox"
   extra-snaps:
     - name: snapd
+  deb-packages:
+    - path: ./deb-packages/rtsp-simple-server_0.0.1_riscv64.deb
   fstab:
     - label: "writable"
       mountpoint: "/"
@@ -95,8 +97,8 @@ customization:
       - path: /etc/apt/preferences.d
         permissions: 0755
     copy-file:
-      - destination: /etc/default/grub.d/zz_p550.cfg
-        source: grub/zz_p550.cfg
+      - destination: /etc/default/grub.d/zz_eic7702_evb.cfg
+        source: grub/zz_eic7702_evb.cfg
       - destination: /etc/flash-kernel/db
         source: flash-kernel/db
       - destination: /etc/flash-kernel/machine
@@ -104,7 +106,25 @@ customization:
       - destination: /tmp/customize.sh
         source: customize.sh
       - destination: /etc/apt/preferences.d
-        source: pin_sifive_ppa
+        source: pin_eswincomputing_ppa
+      - destination: /etc/udev/rules.d/20-memory.rules
+        source: rules/20-memory.rules
+      - destination: /etc/udev/rules.d/21-cipher.rules
+        source: rules/21-cipher.rules
+      - destination: /etc/udev/rules.d/30-bmc.rules
+        source: rules/30-bmc.rules
+      - destination: /etc/udev/rules.d/86-ai.rules
+        source: rules/86-ai.rules
+      - destination: /etc/udev/rules.d/98-media-mmz-drv-perm-udev.rules
+        source: rules/98-media-mmz-drv-perm-udev.rules
+      - destination: /etc/udev/rules.d/99-media-video-drv-perm-udev.rules
+        source: rules/99-media-video-drv-perm-udev.rules
+      - destination: /lib/firmware/clm_bcm43752a2_ag.blob
+        source: firmware/clm_bcm43752a2_ag.blob
+      - destination: /lib/firmware/fw_bcm43752a2_ag.bin
+        source: firmware/fw_bcm43752a2_ag.bin
+      - destination: /lib/firmware/nvram_ap12275_m2.txt
+        source: firmware/nvram_ap12275_m2.txt
     execute:
       - path: /tmp/customize.sh
 artifacts:
